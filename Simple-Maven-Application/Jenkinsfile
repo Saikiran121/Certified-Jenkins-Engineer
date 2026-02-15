@@ -53,14 +53,33 @@ pipeline {
             }
         }
 
+        stage('Run Application') {
+            steps {
+                echo "Starting Spring Boot App in background on port ${params.APP_PORT}..."
+                dir('Simple-Maven-Application') {
+                    // JENKINS_NODE_COOKIE=dontKillMe prevents Jenkins from killing this background process when the stage ends
+                    sh "JENKINS_NODE_COOKIE=dontKillMe nohup java -jar target/*.jar --server.port=${params.APP_PORT} > app.log 2>&1 &"
+                }
+            }
+        }
+
         stage('Integration Testing') {
             steps {
-                echo "Waiting for ${params.SLEEP_TIME}..."
+                echo "Waiting for ${params.SLEEP_TIME} to ensure app is fully started..."
                 sh "sleep ${params.SLEEP_TIME}"
 
                 echo "Testing endpoint on port ${params.APP_PORT}..."
                 sh "curl -s http://localhost:${params.APP_PORT}"
             }
+        }
+    }
+
+    post {
+        always {
+            echo 'Pipeline completed. Cleaning up background processes and workspace...'
+            // Kill the application running on the specified port
+            sh "fuser -k ${params.APP_PORT}/tcp || true"
+            deleteDir()
         }
     }
 }
