@@ -1,0 +1,44 @@
+pipeline {
+    agent any
+
+    tools {
+        // Install the Maven version configured as "M3" and add it to the path.
+        maven "M3912"
+    }
+    
+    stages{
+        stage('Echo Version') {
+            steps {
+                sh 'echo Print Maven Version'
+                sh 'mvn -version'
+            }
+        }
+        
+        /*stage('Checkout') {
+            steps {
+                echo 'Cloning the Repo...'
+                git url: 'https://github.com/Saikiran121/Certified-Jenkins-Engineer.git',
+                    branch: 'main'
+            }
+        }*/
+        
+        stage('Build') {
+            steps {
+                echo 'Compiling the code'
+                // As I have code in Simple-Maven-Application Directory I'm using dir
+                dir('Simple-Maven-Application') {
+                    sh 'mvn clean install -DskipTests'
+                }
+            }
+        }
+        
+        stage('Unit Tests') {
+            steps {
+                echo 'Running JUnit tests'
+                dir('Simple-Maven-Application') {
+                    sh 'mvn test'
+                }
+            }
+        }
+    }
+}
