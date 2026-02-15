@@ -1,0 +1,16 @@
+pipeline {
+    agent any 
+
+    tools {
+        nodejs 'nodejs-24-13-0'
+    }
+
+    stages {
+        stage('Check node version') {
+            steps { 
+                echo 'Checking node version...'
+                sh 'node --version'
+            }
+        }
+    }
+}
