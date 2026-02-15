@@ -43,7 +43,7 @@ pipeline {
                                     --format ALL \
                                     --project "NodeJs-Application" \
                                     --nvdApiKey \$NVD_KEY \
-                                    --out ./dependency-check-report \
+                                    --out ./dependency-check-report
                                 """
                             }
                         }
