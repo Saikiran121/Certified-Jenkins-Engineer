@@ -48,9 +48,9 @@ pipeline {
                                     --failOnCVSS 7.0
                                 ''', odcInstallation: 'OWASP-DepCheck-12'
 
-                                dependencyCheckPublisher{
+                                dependencyCheckPublisher(
                                     pattern: '**/dependency-check-report/dependency-check-report.xml'
-                                } 
+                                )
                             }
                         }
                     }
