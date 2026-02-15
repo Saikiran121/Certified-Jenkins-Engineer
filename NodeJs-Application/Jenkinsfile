@@ -15,7 +15,9 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
-                sh 'npm install --no-audit'
+                dir('NodeJs-Application') {
+                    sh 'npm install --no-audit'
+                }
             }
         }
     }
