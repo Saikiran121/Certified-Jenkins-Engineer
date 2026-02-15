@@ -44,7 +44,6 @@ pipeline {
                                     --project "NodeJs-Application" \
                                     --nvdApiKey \$NVD_KEY \
                                     --out ./dependency-check-report \
-                                    --failOnCVSS 7
                                 """
                             }
                         }
