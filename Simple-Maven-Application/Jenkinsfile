@@ -24,8 +24,7 @@ pipeline {
         
         stage('Build') {
             steps {
-                echo 'Compiling the code'
-                // As I have code in Simple-Maven-Application Directory I'm using dir
+                echo 'Building Spring Boot Application...'
                 dir('Simple-Maven-Application') {
                     sh 'mvn clean install -DskipTests'
                 }
@@ -34,10 +33,23 @@ pipeline {
         
         stage('Unit Tests') {
             steps {
-                echo 'Running JUnit tests'
+                echo 'Running JUnit tests...'
                 dir('Simple-Maven-Application') {
                     sh 'mvn test'
                 }
+            }
+            post {
+                always {
+                    // Generate Test Reports in Jenkins UI
+                    junit '**/target/surefire-reports/*.xml'
+                }
+            }
+        }
+
+        stage('Archive Artifact') {
+            steps {
+                echo 'Saving the executable JAR...'
+                archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true
             }
         }
     }
