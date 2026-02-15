@@ -21,27 +21,31 @@ pipeline {
             }
         }
 
-        stage('NPM Dependency Audit') {
-            steps {
-                dir('NodeJs-Application') {
-                    sh '''
-                        npm audit --audit-level=high
-                        echo $?
-                    '''
+        stage('Dependency Scanning') {
+            parallel{
+                stage('NPM Dependency Audit') {
+                    steps {
+                        dir('NodeJs-Application') {
+                            sh '''
+                                npm audit --audit-level=high
+                                echo $?
+                            '''
+                        }
+                    }
                 }
-            }
-        }
 
-        stage('OWASP Dependency Check') {
-            steps {
-                dir('NodeJs-Application') {
-                    dependencyCheck additionalArguments: '''
-                        --scan .
-                        --format ALL
-                        --prettyPrint
-                        --project "NodeJs-Application"
-                        --out ./dependency-check-report
-                    ''', odcInstallation: 'OWASP-DepCheck-12'
+                stage('OWASP Dependency Check') {
+                    steps {
+                        dir('NodeJs-Application') {
+                            dependencyCheck additionalArguments: '''
+                                --scan .
+                                --format ALL
+                                --prettyPrint
+                                --project "NodeJs-Application"
+                                --out ./dependency-check-report
+                            ''', odcInstallation: 'OWASP-DepCheck-12'
+                        }
+                    }
                 }
             }
         }
