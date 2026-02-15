@@ -31,5 +31,19 @@ pipeline {
                 }
             }
         }
+
+        stage('OWASP Dependency Check') {
+            steps {
+                dir('NodeJs-Application') {
+                    dependencyCheck additionalArguments: '''
+                        --scan .
+                        --format ALL
+                        --prettyPrint
+                        --project "NodeJs-Application"
+                        --out ./dependency-check-report
+                    ''', odcInstallation: 'OWASP-DepCheck-12'
+                }
+            }
+        }
     }
 }
