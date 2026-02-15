@@ -75,6 +75,12 @@ pipeline {
     }
 
     post {
+        success {
+            emailext attachLog: true, body: '$DEFAULT_CONTENT', replyTo: 'saikiranbiradar76642@gmail.com', subject: '$DEFAULT_SUBJECT', to: '$DEFAULT_RECIPIENTS'
+        }
+        failure {
+            emailext attachLog: true, body: '$DEFAULT_CONTENT', replyTo: 'saikiranbiradar76642@gmail.com', subject: '$DEFAULT_SUBJECT', to: '$DEFAULT_RECIPIENTS'
+        }
         always {
             echo 'Pipeline completed. Cleaning up background processes and workspace...'
             // Kill the application running on the specified port
