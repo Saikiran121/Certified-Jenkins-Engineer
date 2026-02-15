@@ -37,13 +37,16 @@ pipeline {
                 stage('OWASP Dependency Check') {
                     steps {
                         dir('NodeJs-Application') {
-                            dependencyCheck additionalArguments: '''
-                                --scan .
-                                --format ALL
-                                --prettyPrint
-                                --project "NodeJs-Application"
-                                --out ./dependency-check-report
-                            ''', odcInstallation: 'OWASP-DepCheck-12'
+                            withCredentials([string(credentialsId: 'nvd-api-key', variable: 'NVD_KEY')]) {
+                                dependencyCheck additionalArguments: '''
+                                    --scan .
+                                    --format ALL
+                                    --prettyPrint
+                                    --project "NodeJs-Application"
+                                    --nvdApiKey ${NVD_KEY}
+                                    --out ./dependency-check-report
+                                ''', odcInstallation: 'OWASP-DepCheck-12'
+                            }
                         }
                     }
                 }
