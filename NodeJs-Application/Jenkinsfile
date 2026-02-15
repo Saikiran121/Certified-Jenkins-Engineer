@@ -6,6 +6,7 @@ pipeline {
     }
 
     stages {
+
         stage('Check node version') {
             steps { 
                 echo 'Checking node version...'
@@ -22,7 +23,8 @@ pipeline {
         }
 
         stage('Dependency Scanning') {
-            parallel{
+            parallel {
+
                 stage('NPM Dependency Audit') {
                     steps {
                         dir('NodeJs-Application') {
@@ -38,7 +40,7 @@ pipeline {
                     steps {
                         dir('NodeJs-Application') {
                             withCredentials([string(credentialsId: 'nvd-api-key', variable: 'NVD_KEY')]) {
-                                dependencyCheck additionalArguments: '''
+                                dependencyCheck additionalArguments: """
                                     --scan .
                                     --format ALL
                                     --prettyPrint
@@ -46,18 +48,24 @@ pipeline {
                                     --nvdApiKey ${NVD_KEY}
                                     --out ./dependency-check-report
                                     --failOnCVSS 7.0
-                                ''', odcInstallation: 'OWASP-DepCheck-12'
-
-                                dependencyCheckPublisher(
-                                    pattern: '**/dependency-check-report/dependency-check-report.xml',
-                                    failedTotalCritical: 1,
-                                    failedTotalHigh: 1
-                                )
+                                """, 
+                                odcInstallation: 'OWASP-DepCheck-12'
                             }
                         }
                     }
+                    post {
+                        always {
+                            dependencyCheckPublisher(
+                                pattern: '**/dependency-check-report/dependency-check-report.xml',
+                                failedTotalCritical: 1,
+                                failedTotalHigh: 1
+                            )
+                        }
+                    }
                 }
+
             }
         }
+
     }
 }
