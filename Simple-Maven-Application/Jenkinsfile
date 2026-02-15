@@ -52,5 +52,12 @@ pipeline {
                 archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true
             }
         }
+
+        stage('Integration Testing') {
+            steps {
+                sh 'sleep 5s'
+                sh 'curl -s http://localhost:8093'
+            }
+        }
     }
 }
