@@ -55,8 +55,11 @@ pipeline {
 
         stage('Integration Testing') {
             steps {
-                sh 'sleep 5s'
-                sh 'curl -s http://localhost:8093'
+                echo "Waiting for ${params.SLEEP_TIME}..."
+                sh "sleep ${params.SLEEP_TIME}"
+
+                echo "Testing endpoint on port ${params.APP_PORT}..."
+                sh "curl -s http://localhost:${params.APP_PORT}"
             }
         }
     }
