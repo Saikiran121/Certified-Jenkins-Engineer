@@ -20,5 +20,16 @@ pipeline {
                 }
             }
         }
+
+        stage('NPM Dependency Audit') {
+            steps {
+                dir('NodeJs-Application') {
+                    sh '''
+                        npm audit --audit-level=high
+                        echo $?
+                    '''
+                }
+            }
+        }
     }
 }
